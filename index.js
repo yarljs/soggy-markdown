@@ -2,6 +2,16 @@ var Remarkable = require('remarkable');
 var md = new Remarkable();
 var dPI = require('dot-prop-immutable');
 
+function stringify(key, s) {
+  if (s === undefined) {
+    return "{key: undefined}"
+  }
+  if (s === null) {
+    return "null"
+  }
+  return s;
+}
+
 function parse(markdown, data) {
   let stack = [];
   let parse = [];
@@ -52,7 +62,7 @@ function parse(markdown, data) {
     let key = markdown.slice(parse[i].start + 2, parse[i].end - 1);
     let item = dPI.get(data, key);
 
-    res += markdown.slice(index, parse[i].start) + item.toString();
+    res += markdown.slice(index, parse[i].start) + stringify(key, item);
     index = parse[i].end + 2;
   }
   return md.render(res);
